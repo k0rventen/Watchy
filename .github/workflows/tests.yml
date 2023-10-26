@@ -1,0 +1,23 @@
+name: Compile watchy
+
+on:
+  push:
+    branches: 
+      - "*"
+
+jobs:
+  compile-tests:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: install platformio
+        run: |
+          pip3 install platformio
+      - 
+        name: build
+        run: |
+          cp src/settings.example.h src/settings.h
+          pio run 
