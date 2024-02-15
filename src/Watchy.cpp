@@ -640,7 +640,14 @@ bool Watchy::getDateAPI() {
   if (connectWiFi()) {
       HTTPClient http; // Use Weather API for live data if WiFi is connected
       http.setConnectTimeout(3000); // 3 second max timeout
-      String weatherQueryURL = "http://worldtimeapi.org/api/timezone/" + settings.timezone;
+      String weatherQueryURL;
+      if (settings.timezone == "ip"){
+         weatherQueryURL = "http://worldtimeapi.org/api/ip";
+      }
+      else{
+         weatherQueryURL= "http://worldtimeapi.org/api/timezone/" + settings.timezone;
+      }
+
       http.begin(weatherQueryURL.c_str());
       int httpResponseCode = http.GET();
       if (httpResponseCode == 200) {

@@ -11,7 +11,6 @@
 #include "Open_24_Display.h"
 #include "Display.h"
 #include "WatchyRTC.h"
-#include "BLE.h"
 #include "bma.h"
 #include "config.h"
 #include "icons.h"

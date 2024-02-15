@@ -2,11 +2,9 @@
 
 #define DARKMODE false
 
-const uint8_t BATTERY_SEGMENT_WIDTH = 7;
+const uint8_t BATTERY_SEGMENT_WIDTH = 5;
 const uint8_t BATTERY_SEGMENT_HEIGHT = 11;
-const uint8_t BATTERY_SEGMENT_SPACING = 9;
-const uint8_t WEATHER_ICON_WIDTH = 48;
-const uint8_t WEATHER_ICON_HEIGHT = 32;
+const uint8_t BATTERY_SEGMENT_SPACING = 5;
 
 void Watchy7SEG::drawWatchFace(){
     display.fillScreen(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
@@ -69,22 +67,32 @@ void Watchy7SEG::drawDate(){
     display.println(currentTime.Day);
     display.setCursor(5, 150);
     display.println(tmYearToCalendar(currentTime.Year));// offset from 1970, since year is stored in uint8_t
+
 }
 
 
 void Watchy7SEG::drawBattery(){
     float VBAT = getBatteryVoltage();
-    int percent = (VBAT-3.4)*100L/(4.2-3.4);
+    int percent = (VBAT-3.2)*100L/(4.2-3.2);
     percent = min(percent,100);
     percent = max(percent,0);
     int16_t  x1, y1;
     uint16_t w, h;
 
-    String battery_percentage = String(percent)+"%";
+
+    display.drawBitmap(154, 73, battery, 37, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);//clear battery segments
+    int8_t batteryLevel = percent / 18; // up to 5 battery segments
+    for(int8_t batterySegments = 0; batterySegments < batteryLevel; batterySegments++){
+        display.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    }
+
+
+    String battery_voltage = String(VBAT)+"v";
     display.setFont(&Seven_Segment10pt7b);
-    display.getTextBounds(battery_percentage, 100, 80, &x1, &y1, &w, &h);
-    display.setCursor((195-w), 85);
-    display.println(battery_percentage);
+    display.getTextBounds(battery_voltage, 100, 100, &x1, &y1, &w, &h);
+    display.setCursor((191-w), 100+h);
+    display.println(battery_voltage);
 }
 
 
